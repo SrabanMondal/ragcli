@@ -24,7 +24,7 @@ func init() {
 		ChunkSize:    200,
 		TopK:         3,
 		Embed_Model: "nomic-embed-text",
-		Generator_Model: "deepseek-r1:1.5b",
+		Generator_Model: "llama3.1",
 	}
 
 	rootCmd.AddCommand(addCmd)
