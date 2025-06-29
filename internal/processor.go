@@ -104,6 +104,7 @@ func (p *RAGProcessor) AskQuestion(query string) (string, error) {
 	return answer, nil
 }
 
+
 func (p *RAGProcessor) ListFiles() error {
 	files, err := p.MetaStore.ListFiles()
 	if err != nil {
