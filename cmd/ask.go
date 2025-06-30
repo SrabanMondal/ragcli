@@ -39,5 +39,5 @@ var askCmd = &cobra.Command{
 }
 
 func init(){
-	askCmd.Flags().StringVarP(&docName, "document","d","","Add specifc document name to ask question")
+	askCmd.Flags().StringVarP(&docName, "doc","d","","Add specifc document name to ask question")
 }
