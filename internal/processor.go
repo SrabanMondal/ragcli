@@ -72,20 +72,20 @@ func (p *RAGProcessor) AddFile(path string) error {
 			log.Printf("⚠️ Failed to embed chunk: %v", err)
 			continue
 		}
-		p.VectorStore.AddVector(id, vec)
+		p.VectorStore.AddVector(id, vec, docName)
 	}
 
 	fmt.Printf("✅ %d chunks indexed from: %s\n", len(chunks), docName)
 	return nil
 }
 
-func (p *RAGProcessor) AskQuestion(query string) (string, error) {
+func (p *RAGProcessor) AskQuestion(query, docName string) (string, error) {
 	queryVec, err := p.Embedder.Embed(query)
 	if err != nil {
 		return "", fmt.Errorf("❌ Failed to embed query: %w", err)
 	}
 
-	ids, err := p.VectorStore.SearchSimilar(queryVec, p.Config.TopK)
+	ids, err := p.VectorStore.SearchSimilar(queryVec, p.Config.TopK, docName)
 	if err != nil {
 		return "", fmt.Errorf("❌ Vector search failed: %w", err)
 	}
