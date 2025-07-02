@@ -8,8 +8,9 @@ import (
 	"github.com/Ashank007/docai/chunker"
 	"github.com/Ashank007/docai/embedder"
 	"github.com/Ashank007/docai/generator"
+	"github.com/Ashank007/docai/reader"
 	"github.com/Ashank007/docai/store"
-	//"github.com/Ashank007/docai/types"
+	"github.com/Ashank007/docai/summarizer"
 )
 
 type RAGProcessor struct {
@@ -19,6 +20,7 @@ type RAGProcessor struct {
 	Generator   generator.Generator
 	Chunker     chunker.Chunker
 	Config      *Config
+	Summarizer summarizer.Summarizer
 }
 
 func NewRAGProcessor(cfg *Config) *RAGProcessor {
@@ -37,6 +39,9 @@ func NewRAGProcessor(cfg *Config) *RAGProcessor {
 		Generator:   generator.NewOllama(cfg.Generator_Model, cfg.GeneratorURL),
 		Chunker:     chunker.NewSentenceChunker(cfg.ChunkSize),
 		Config:      cfg,
+		Summarizer:   *summarizer.NewSummarizer(chunker.NewSentenceChunker(cfg.ChunkSize),
+						generator.NewOllama(cfg.Generator_Model, cfg.GeneratorURL),
+					reader.NewPDFReader(), reader.NewTextReader(), reader.NewDocxReader()),
 	}
 }
 
@@ -130,6 +135,14 @@ func (p *RAGProcessor) RemoveFile(name string) error {
 	return nil
 }
 
+func (p *RAGProcessor) Summarize(path string) error {
+	summary, err := p.Summarizer.SummarizeDocument(path)
+	if err!=nil {
+		return err
+	}
+	fmt.Println(summary)
+	return nil
+}
 func getDocName(path string) string {
 	base := filepath.Base(path)
 	ext := filepath.Ext(base)
