@@ -8,7 +8,6 @@ import (
 	"github.com/Ashank007/docai/chunker"
 	"github.com/Ashank007/docai/embedder"
 	"github.com/Ashank007/docai/generator"
-	"github.com/Ashank007/docai/reader"
 	"github.com/Ashank007/docai/store"
 	//"github.com/Ashank007/docai/types"
 )
@@ -19,7 +18,6 @@ type RAGProcessor struct {
 	Embedder    embedder.Embedder
 	Generator   generator.Generator
 	Chunker     chunker.Chunker
-	Reader      *reader.PDFReader
 	Config      *Config
 }
 
@@ -38,13 +36,16 @@ func NewRAGProcessor(cfg *Config) *RAGProcessor {
 		Embedder:    embedder.NewOllama(cfg.Embed_Model, cfg.EmbedderURL),
 		Generator:   generator.NewOllama(cfg.Generator_Model, cfg.GeneratorURL),
 		Chunker:     chunker.NewSentenceChunker(cfg.ChunkSize),
-		Reader:      reader.NewPDFReader(),
 		Config:      cfg,
 	}
 }
 
 func (p *RAGProcessor) AddFile(path string) error {
-	text, err := p.Reader.Extract(path)
+	var rdr, err = getReaderByExtension(path)
+	if err!=nil {
+		return fmt.Errorf("❌ Failed to load Reader: %w", err)
+	}
+	text, err := rdr.Extract(path)
 	if err != nil {
 		return fmt.Errorf("❌ Failed to read PDF: %w", err)
 	}
