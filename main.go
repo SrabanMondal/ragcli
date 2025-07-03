@@ -1,7 +1,11 @@
 package main
 
-import "github.com/SrabanMondal/ragcli/cmd"
-func main() {
+import (
+	"fmt"
 
-	cmd.Execute()
+//	"github.com/SrabanMondal/ragcli/cmd"
+)
+func main() {
+	fmt.Print("hello world")
+	//cmd.Execute()
 }

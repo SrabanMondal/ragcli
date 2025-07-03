@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cfg *internal.Config
+var cfg  = internal.DefaultConfig()
 
 var rootCmd = &cobra.Command{
 	Use:   "ragcli",
@@ -17,19 +17,12 @@ func Execute() {
 }
 
 func init() {
-	cfg = &internal.Config{
-		DBPath:       "rag.db",
-		EmbedderURL:  "http://localhost:11434/api/embeddings",
-		GeneratorURL: "http://localhost:11434/api/generate",
-		ChunkSize:    200,
-		TopK:         3,
-		Embed_Model: "nomic-embed-text",
-		Generator_Model: "deepseek-r1:1.5b",
-	}
+	cfg = internal.LoadConfig()
 
 	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(removeCmd)
 	rootCmd.AddCommand(listCmd)
 	rootCmd.AddCommand(askCmd)
 	rootCmd.AddCommand(summaryCmd)
+	rootCmd.AddCommand(configCmd)
 }
